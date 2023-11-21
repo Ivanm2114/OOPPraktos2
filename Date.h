@@ -19,8 +19,6 @@ public:
     string print() const;
     bool isnull() const;
 
-
-
 private:
     int year;
     int month;
