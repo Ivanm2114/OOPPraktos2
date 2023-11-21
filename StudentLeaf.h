@@ -8,18 +8,20 @@
 #include "Date.h"
 
 using namespace std;
-
+template <class T, class T2>
 class StudentLeaf {
 public:
     StudentLeaf();
 
-    StudentLeaf(string name, Date date);
+    StudentLeaf(T data, T2 date);
 
     StudentLeaf(StudentLeaf const &leaf);
 
-    void setNameAndDate(string name, Date date);
+    ~StudentLeaf();
 
-    bool canSetName(string name) const;
+    void setDataAndDate(T data, T2 date);
+
+    bool canSetData(T data) const;
 
     bool operator==(const StudentLeaf &obj) const;
 
@@ -33,9 +35,18 @@ public:
 
     bool empty() const;
 
+    T2 getDate() const;
+
+    StudentLeaf* getLeftLeaf() const;
+
+    StudentLeaf* getRightLeaf() const;
+
+    T getData() const;
+
 private:
-    string studentName;
-    Date lessonDate;
-    StudentLeaf *leftStudent;
-    StudentLeaf *rightStudent;
+    T data;
+    T2 lessonDate;
+    StudentLeaf<T,T2> *leftLeaf= nullptr;
+    StudentLeaf<T,T2> *rightLeaf= nullptr;
 };
+

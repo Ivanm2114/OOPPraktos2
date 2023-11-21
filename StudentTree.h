@@ -5,21 +5,29 @@
 
 #include "StudentLeaf.h"
 
+template <class T,class T2>
 class StudentTree {
 public:
     StudentTree();
 
-    StudentTree(StudentLeaf const &baseLeaf);
+    StudentTree(StudentLeaf<T,T2> const &baseLeaf);
 
     StudentTree(StudentTree const &baseTree);
 
-    void add(StudentLeaf leaf);
+    ~StudentTree();
+
+
+
+    void add(StudentLeaf<T,T2> leaf);
 
     void add(string name, Date date);
 
-    bool canAdd(StudentLeaf leaf) const;
+    bool canAdd(StudentLeaf<T,T2> leaf) const;
+
+
 
 private:
+    void innerAdd(StudentLeaf<T,T2> root,StudentLeaf<T,T2> leaf);
     int counter;
-    StudentLeaf base;
+    StudentLeaf<T,T2> base;
 };

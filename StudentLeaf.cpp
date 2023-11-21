@@ -2,61 +2,90 @@
 
 using namespace std;
 
-StudentLeaf::StudentLeaf() {
-    leftStudent = nullptr;
-    rightStudent = nullptr;
-    studentName = "";
-    lessonDate = Date();
-}
-
-StudentLeaf::StudentLeaf(string name, Date date) {
-    studentName = name;
+template <class T, class T2>
+StudentLeaf<T,T2>::StudentLeaf(T data, T2 date) {
+    this->data = data;
     lessonDate = Date(date);
-    leftStudent = nullptr;
-    rightStudent = nullptr;
+    leftLeaf = nullptr;
+    rightLeaf = nullptr;
 }
 
-StudentLeaf::StudentLeaf(const StudentLeaf &leaf) {
-    leftStudent = nullptr;
-    rightStudent = nullptr;
+template <class T, class T2>
+StudentLeaf<T,T2>::StudentLeaf(const StudentLeaf &leaf) {
+    leftLeaf = nullptr;
+    rightLeaf = nullptr;
     this->studentName = leaf.studentName;
-    this->lessonDate = Date(leaf.lessonDate);
+    this->lessonDate = T2(leaf.lessonDate);
 }
 
-bool StudentLeaf::canSetName(string name) const {
-    return !name.empty();
+template <class T, class T2>
+bool StudentLeaf<T,T2>::canSetData(T data) const {
+    return data==NULL;
 }
 
-void StudentLeaf::setNameAndDate(string name, Date date) {
-    if (canSetName(name)) {
-        studentName = name;
-        lessonDate = Date(date);
+template <class T, class T2>
+void StudentLeaf<T,T2>::setDataAndDate(T data, T2 date) {
+    if (canSetName(data)) {
+        this->data = data;
+        lessonDate = T2(date);
     }
 }
 
-bool StudentLeaf::operator==(const StudentLeaf &obj) const {
+template <class T, class T2>
+bool StudentLeaf<T,T2>::operator==(const StudentLeaf &obj) const {
     return this->studentName==obj.studentName and this->lessonDate==obj.lessonDate;
 }
 
-
-string StudentLeaf::print() const {
-    return studentName+" "+lessonDate.print();
+template <class T, class T2>
+string StudentLeaf<T,T2>::print() const {
+    return data+" "+lessonDate.print();
 }
 
-bool StudentLeaf::canSetLeaf(const StudentLeaf *leaf) const {
+template <class T, class T2>
+bool StudentLeaf<T,T2>::canSetLeaf(const StudentLeaf<T,T2> *leaf) const {
     return leaf!= nullptr;
 }
 
-void StudentLeaf::setRightLeaf(StudentLeaf *leaf) {
+template <class T, class T2>
+void StudentLeaf<T,T2>::setRightLeaf(StudentLeaf<T,T2> *leaf) {
     if(canSetLeaf(leaf))
-        rightStudent=leaf;
+        rightLeaf=leaf;
 }
 
-void StudentLeaf::setLeftLeaf(StudentLeaf *leaf) {
+template <class T, class T2>
+void StudentLeaf<T,T2>::setLeftLeaf(StudentLeaf<T,T2> *leaf) {
     if(canSetLeaf(leaf))
-        leftStudent=leaf;
+        leftLeaf=leaf;
 }
 
-bool StudentLeaf::empty() const {
-    return lessonDate.isnull() and studentName.empty();
+template <class T, class T2>
+bool StudentLeaf<T,T2>::empty() const {
+    return lessonDate.isnull() and data==NULL;
+}
+
+template <class T, class T2>
+T2 StudentLeaf<T,T2>::getDate() const{
+    return lessonDate;
+}
+
+
+template <class T, class T2>
+T StudentLeaf<T,T2>::getData() const {
+    return data;
+}
+
+template <class T, class T2>
+StudentLeaf<T,T2>* StudentLeaf<T,T2>::getLeftLeaf() const {
+    return leftLeaf;
+}
+
+template <class T, class T2>
+StudentLeaf<T,T2>* StudentLeaf<T,T2>::getRightLeaf() const {
+    return rightLeaf;
+}
+
+template<class T, class T2>
+StudentLeaf<T, T2>::~StudentLeaf() {
+    delete rightLeaf;
+    delete leftLeaf;
 }
