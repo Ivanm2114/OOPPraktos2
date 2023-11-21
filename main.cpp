@@ -4,21 +4,6 @@
 
 using namespace std;
 
-
-class StudentTree {
-public:
-    StudentTree();
-
-    StudentTree(StudentLeaf const &baseLeaf);
-
-    StudentTree(StudentTree const &baseLeaf);
-
-    void add(StudentLeaf leaf);
-
-
-};
-
-
 int main() {
 
 
