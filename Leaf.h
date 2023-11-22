@@ -6,6 +6,8 @@
 
 #include <string>
 #include "Date.h"
+#include <iostream>
+#include <fstream>
 
 
 using namespace std;
@@ -34,6 +36,8 @@ public:
 
     void setParentLeaf(Leaf<V,K> *leaf);
 
+    void getFromFile(string path);
+
     string print() const;
 
     bool empty() const;
@@ -45,7 +49,6 @@ public:
     Leaf<V,K>* getRightLeaf() const;
 
     void dropParentLeaf();
-
 
     Leaf<V,K>* searchValue(V name) const;
 
@@ -113,14 +116,6 @@ bool Leaf<V, K>::operator==(Leaf<V, K> &obj) const {
     return flag;
 }
 
-template<class V, class K>
-string Leaf<V, K>::print() const {
-    string t = "";
-    if (leftLeaf != nullptr) t += leftLeaf->print() + "|";
-    t += data + " " + date + "|";
-    if (rightLeaf != nullptr) t += rightLeaf->print() + "|";
-    return t;
-}
 
 template<class V, class K>
 bool Leaf<V, K>::canSetLeaf(const Leaf<V, K> *leaf) const {
@@ -192,4 +187,19 @@ Leaf<V, K> *Leaf<V, K>::searchValue(V name) const {
             t = rightLeaf->searchValue(name);
         return t;
     }
+}
+
+
+template<class V,class K>
+string Leaf<V,K>::print() const {
+    string temp;
+    if(leftLeaf!= nullptr) temp += getLeftLeaf()->print();
+    temp += data;
+    temp += " ";
+    temp += date.print();
+    if(rightLeaf!=nullptr)  temp += getRightLeaf()->print();
+    return temp;
+
+
+
 }

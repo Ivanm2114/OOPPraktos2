@@ -3,6 +3,10 @@
 
 #endif //LABA4_STUDENTTREE_H
 #include "Leaf.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 template <class V,class K>
 class Tree {
@@ -12,6 +16,8 @@ public:
     Tree(V data, K date);
 
     Tree(Leaf<V,K> const &baseLeaf);
+
+    Tree(Tree<V,K> const &baseTree);
 
     ~Tree();
 
@@ -23,9 +29,11 @@ public:
 
     void deleteValue(V name);
 
+    string printTree();
+
     bool findKey(K date) const;
 
-    string print() const;
+    ostream operator<< (ostream stream) const;
 
     int getCounter() const;
 
@@ -33,7 +41,12 @@ public:
 
     bool operator==(Tree<V,K> &obj) const;
 
+
     V operator[](K date) const;
+
+    void write2File(string path);
+
+    void getFromFile(string path);
 
     Leaf<V,K>* findValue(V name) const;
 
@@ -42,7 +55,7 @@ public:
 private:
     void addChildren(Leaf<V,K> leaf);
     void innerAdd(Leaf<V,K> &root, Leaf<V,K> leaf);
-    int counter;
+    int counter=0;
     Leaf<V,K> base;
 };
 
@@ -55,14 +68,12 @@ Tree<V, K>::Tree() {
 
 template<class V, class K>
 Tree<V,K>::Tree(V data, K date) {
-    base = Leaf<V,K>(data, date);
-    counter = 1;
+    add(data,date);
 }
 
 template<class V, class K>
 Tree<V, K>::Tree(const Leaf<V, K> &baseLeaf) {
-    counter = 1;
-    base = Leaf(baseLeaf);
+    add(Leaf<V,K>(baseLeaf));
 }
 
 template<class V, class K>
@@ -78,12 +89,11 @@ void Tree<V, K>::add(V name, K date) {
 template<class V, class K>
 void Tree<V, K>::add(Leaf<V, K> leaf) {
     if (!findKey(leaf.getDate())) {
-        auto tmp = Leaf(leaf);
-        if (canAdd(tmp)) {
+        if (canAdd(leaf)) {
             if (counter == 0) {
                 base = Leaf(leaf);
             } else {
-                innerAdd(base, Leaf(leaf));
+                innerAdd(base, leaf);
             }
             counter++;
         }
@@ -97,6 +107,7 @@ void Tree<V, K>::innerAdd(Leaf<V, K> &root, Leaf<V, K> leaf) {
         if (left != nullptr) {
             innerAdd(*left, leaf);
         } else {
+            leaf.setParentLeaf(&root);
             root.setLeftLeaf(&leaf);
 
         }
@@ -105,10 +116,11 @@ void Tree<V, K>::innerAdd(Leaf<V, K> &root, Leaf<V, K> leaf) {
         if (right != nullptr) {
             innerAdd(*right, leaf);
         } else {
+            leaf.setParentLeaf(&root);
             root.setRightLeaf(&leaf);
         }
     }
-    leaf.setParentLeaf(&root);
+
 }
 
 template<class V, class K>
@@ -127,7 +139,7 @@ void Tree<V, K>::addChildren(Leaf<V, K> leaf) {
 
 template<class V, class K>
 void Tree<V, K>::deleteAll() {
-    base.Leaf<V,K>::~Leaf();
+    base.~Leaf();
     counter = 0;
 }
 
@@ -151,9 +163,11 @@ bool Tree<V, K>::findKey(K date) const {
 }
 
 template<class V, class K>
-string Tree<V, K>::print() const {
-    return base.print();
+ostream Tree<V, K>::operator<<(std::ostream stream) const {
+    stream << base;
 }
+
+
 
 template<class V, class K>
 V Tree<V, K>::operator[](K date) const {
@@ -183,3 +197,20 @@ void Tree<V, K>::deleteValue(V name) {
     }
 }
 
+template<class V,class K>
+Tree<V,K>::Tree(const Tree<V, K> &baseTree) {
+    auto newBase=Leaf<V,K>(baseTree.base);
+    add(newBase);
+    addChildren(newBase);
+}
+
+
+
+
+template<class V,class K>
+void Tree<V,K>::write2File(string path){
+    fstream file(path);
+    file << base.print();
+    file.close();
+
+}
