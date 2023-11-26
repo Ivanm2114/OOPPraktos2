@@ -11,7 +11,8 @@
 
 
 using namespace std;
-template <class V, class K>
+
+template<class V, class K>
 class Leaf {
 public:
     Leaf();
@@ -26,41 +27,42 @@ public:
 
     bool canSetData(V data) const;
 
-    bool operator==(Leaf<V,K> &obj) const;
+    bool operator==(Leaf<V, K> &obj) const;
 
-    bool canSetLeaf(const Leaf<V,K> *leaf) const;
+    bool canSetLeaf(const Leaf<V, K> *leaf) const;
 
-    void setRightLeaf(Leaf<V,K> *leaf);
+    void setRightLeaf(Leaf<V, K> *leaf);
 
-    void setLeftLeaf(Leaf<V,K> *leaf);
+    void setLeftLeaf(Leaf<V, K> *leaf);
 
-    void setParentLeaf(Leaf<V,K> *leaf);
+    void setParentLeaf(Leaf<V, K> *leaf);
 
-    void getFromFile(string path);
+    string print(char c) const;
 
-    string print() const;
+    string write2File() const;
 
     bool empty() const;
 
     K getDate() const;
 
-    Leaf<V,K>* getLeftLeaf() const;
+    Leaf<V, K> *getLeftLeaf() const;
 
-    Leaf<V,K>* getRightLeaf() const;
+    Leaf<V, K> *getRightLeaf() const;
 
     void dropParentLeaf();
 
-    Leaf<V,K>* searchValue(V name) const;
+    Leaf<V, K> *searchValue(V name);
 
     V getData() const;
+
 
 
 private:
     V data;
     K date;
-    Leaf<V,K> *leftLeaf= nullptr;
-    Leaf<V,K> *rightLeaf= nullptr;
-    Leaf<V,K> *parentLeaf= nullptr;
+    Leaf<V, K> *leftLeaf = nullptr;
+    Leaf<V, K> *rightLeaf = nullptr;
+    Leaf<V, K> *parentLeaf = nullptr;
 
 };
 
@@ -103,16 +105,16 @@ void Leaf<V, K>::setDataAndDate(V data, K date) {
 
 template<class V, class K>
 bool Leaf<V, K>::operator==(Leaf<V, K> &obj) const {
-     bool flag = (this->data == obj.data) and (this->date == obj.date);
-     if(rightLeaf!= nullptr and obj.getRightLeaf()!= nullptr){
-         flag *= *(getRightLeaf())==*(obj.getRightLeaf());
-     }
-    if(leftLeaf!= nullptr and obj.getLeftLeaf()!= nullptr){
-        flag *= *(getLeftLeaf())==*(obj.getLeftLeaf());
+    bool flag = (this->data == obj.data) and (this->date == obj.date);
+    if (rightLeaf != nullptr and obj.getRightLeaf() != nullptr) {
+        flag *= *(rightLeaf) == *(obj.getRightLeaf());
     }
-    if((leftLeaf!= nullptr and obj.getLeftLeaf()== nullptr) or
-    (rightLeaf!= nullptr and obj.getRightLeaf()== nullptr))
-        flag *=false;
+    if (leftLeaf != nullptr and obj.getLeftLeaf() != nullptr) {
+        flag *= *(leftLeaf) == *(obj.getLeftLeaf());
+    }
+    if ((leftLeaf != nullptr and obj.getLeftLeaf() == nullptr) or
+        (rightLeaf != nullptr and obj.getRightLeaf() == nullptr))
+        flag *= false;
     return flag;
 }
 
@@ -142,7 +144,7 @@ void Leaf<V, K>::setParentLeaf(Leaf<V, K> *leaf) {
 
 template<class V, class K>
 bool Leaf<V, K>::empty() const {
-    return date.isnull() and data == NULL;
+    return date.isnull();
 }
 
 template<class V, class K>
@@ -167,18 +169,22 @@ Leaf<V, K> *Leaf<V, K>::getRightLeaf() const {
 }
 
 template<class V, class K>
-void Leaf<V,K>::dropParentLeaf() {
-    if(parentLeaf->rightLeaf==&this){ parentLeaf->rightLeaf= nullptr;}
-    else{parentLeaf->leftLeaf= nullptr;}
+void Leaf<V, K>::dropParentLeaf() {
+    if (parentLeaf->rightLeaf == this) { parentLeaf->rightLeaf = nullptr; }
+    else { parentLeaf->leftLeaf = nullptr; }
+    parentLeaf= nullptr;
 }
 
 template<class V, class K>
-Leaf<V, K>::~Leaf() {}
+Leaf<V, K>::~Leaf() {
+    if (rightLeaf != nullptr) delete rightLeaf;
+    if (leftLeaf != nullptr) delete leftLeaf;
+}
 
 
 template<class V, class K>
-Leaf<V, K> *Leaf<V, K>::searchValue(V name) const {
-    if (data == name) { return &this; }
+Leaf<V, K> *Leaf<V, K>::searchValue(V name) {
+    if (data == name) { return this; }
     else {
         Leaf<V, K> *t = nullptr;
         if (leftLeaf != nullptr)
@@ -190,16 +196,31 @@ Leaf<V, K> *Leaf<V, K>::searchValue(V name) const {
 }
 
 
-template<class V,class K>
-string Leaf<V,K>::print() const {
+template<class V, class K>
+string Leaf<V, K>::print(char c) const {
     string temp;
-    if(leftLeaf!= nullptr) temp += getLeftLeaf()->print();
+    if (leftLeaf != nullptr) {
+        temp += getLeftLeaf()->print(c);
+    }
     temp += data;
     temp += " ";
     temp += date.print();
-    if(rightLeaf!=nullptr)  temp += getRightLeaf()->print();
+    temp += c;
+    if (rightLeaf != nullptr){ temp += getRightLeaf()->print(c);}
     return temp;
 
+}
 
-
+template<class V,class K>
+string Leaf<V,K>::write2File() const {
+    string temp;
+    temp += data;
+    temp += " ";
+    temp += date.print();
+    temp += "\n";
+    if (leftLeaf != nullptr) {
+        temp += getLeftLeaf()->write2File();
+    }
+    if (rightLeaf != nullptr){ temp += getRightLeaf()->write2File();}
+    return temp;
 }

@@ -12,6 +12,7 @@ public:
     Date();
     Date(const int day,const int month, const int year);
     Date(Date const &originDate);
+    Date(string const &str);
     bool operator < (const Date &obj) const;
     bool operator == (const Date &obj) const;
     void setDate(const int day,const int month, const int year);
